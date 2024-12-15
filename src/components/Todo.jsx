@@ -5,7 +5,7 @@ import { useTodoStore } from "../store/todo-store";
 import { Modal } from "antd";
 
 const Todo = () => {
-  const { todos, addTodo, editTodo, deleteTodo } = useTodoStore();
+  const { todos, addTodo, editTodo, deleteTodo, toggleTodo } = useTodoStore();
   const [task, setTask] = useState("");
   const [editingTodo, setEditingTodo] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -21,12 +21,14 @@ const Todo = () => {
   const handleEdit = (id) => {
     const todo = todos.find((todo) => todo.id === id);
     setEditingTodo(todo);
+    setTask(todo.task);
     setModalAction("edit");
     setIsModalVisible(true);
   };
 
   const handleDelete = (id) => {
-    setEditingTodo({ id });
+    const todo = todos.find((todo) => todo.id === id);
+    setEditingTodo(todo);
     setModalAction("delete");
     setIsModalVisible(true);
   };
@@ -66,9 +68,23 @@ const Todo = () => {
         {todos.map((todo) => (
           <li
             key={todo.id}
-            className="flex items-center justify-between p-2 border rounded-md"
+            className={`flex items-center justify-between p-2 border rounded-md ${
+              todo.completed ? "bg-green-100" : ""
+            }`} // Add class for completed task
           >
-            <span>{todo.task}</span>
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                checked={todo.completed}
+                onChange={() => toggleTodo(todo.id)} // Toggle the todo completion
+                className="mr-2"
+              />
+              <span
+                className={todo.completed ? "line-through text-gray-500" : ""}
+              >
+                {todo.task}
+              </span>
+            </div>
             <div className="space-x-2">
               <Button
                 label="Edit"
