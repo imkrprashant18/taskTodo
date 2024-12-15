@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
+import generateUUID from "../utils/uuid";
 const useTodoStore = create(
   persist(
     (set) => ({
@@ -9,7 +9,7 @@ const useTodoStore = create(
         set((state) => ({
           todos: [
             ...state.todos,
-            { id: Date.now(), task, completed: false }, // Add `completed` field
+            { id: generateUUID(), task, completed: false }, // Add `completed` field
           ],
         })),
       editTodo: (id, updatedTask) =>
